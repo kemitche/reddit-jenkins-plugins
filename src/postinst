@@ -1,5 +1,3 @@
 #!/bin/bash -e
-echo "Restarting jenkins on localhost:8080..."
-curl -X POST -d yes -f http://localhost:8080/restart
+/etc/init.d/jenkins restart
 sleep 15
-echo "Done."
