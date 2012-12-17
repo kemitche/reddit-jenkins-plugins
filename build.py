@@ -53,7 +53,7 @@ def clear_cruft(debarea):
 
 
 def fix_control(debarea, description):
-    for line in fileinput.input(os.path.join(debarea, 'control')):
+    for line in fileinput.input(os.path.join(debarea, 'control'), inplace=1):
         if line.startswith("Section:"):
             print "Section: misc"
         elif line.startswith("Homepage:") or line.startswith("#"):
@@ -61,9 +61,16 @@ def fix_control(debarea, description):
         elif line.startswith("Description:"):
             print "Description:", description
             print ""
+            fileinput.close()
             break
         else:
-            print line
+            print line,
+
+
+def fix_changelog(debarea, series):
+    for line in fileinput.input(os.path.join(debarea, 'changelog'), inplace=1):
+        line = line.replace("unstable", series)
+        print line,
 
 
 def add_inst_files(srcdir, debarea):
@@ -101,6 +108,7 @@ def main():
     package = config.get("package", "name")
     version = config.get("package", "version")
     copyright = config.get("package", "copyright")
+    series = config.get("package", "series")
     description = config.get("package", "description")
     changes = "%s_%s.0_source.changes" % (package, version)
 
@@ -128,6 +136,7 @@ def main():
     clear_cruft(debarea)
 
     fix_control(debarea, description)
+    fix_changelog(debarea, series)
     add_inst_files(srcdir, debarea)
     
     build_binary(buildarea)
