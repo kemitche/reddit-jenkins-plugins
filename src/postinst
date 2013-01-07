@@ -1,3 +1,4 @@
 #!/bin/bash -e
+chown -R jenkins:nogroup /var/lib/jenkins
 /etc/init.d/jenkins restart
 sleep 15
